@@ -96,7 +96,7 @@ const eliminarImagenAnterior = async () => {
     if (data.resultado?.result !== 'ok') {
       console.warn('❌ No se pudo eliminar imagen anterior:', data);
     } else {
-      console.log('✅ Imagen anterior eliminada con éxito');
+      //console.log('✅ Imagen anterior eliminada con éxito');
     }
   } catch (error) {
     console.error('🛑 Error al eliminar imagen anterior:', error);

@@ -8,6 +8,8 @@ const EditarCategoria = ({setIsEditCategorias,
                           textoConfirm,
                           setTextoConfirm
                         }) => {
+  
+  const [archivoOriginal, setArchivoOriginal] = useState(null);
 
   const {
     register,
