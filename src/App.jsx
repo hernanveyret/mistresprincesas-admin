@@ -128,7 +128,7 @@ function App() {
   // eliminar imagen de cloudinary productos ok
   const eliminarImagen = async (carpeta, publicId) => {    
     try {
-      const res = await fetch('https://mistresprincesas-admin.vercel.app/api/eliminar-imagen', {
+      const res = await fetch('https://m3p-server.vercel.app/api/eliminar-imagen', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -145,7 +145,7 @@ function App() {
         setIsConfirm(true)
       }
     } catch (err) {
-      setTextoConfirm('Error en Fecth ', err)
+      setTextoConfirm(`Error en Fetch: ${err.message}`);
         setIsConfirm(true)
     }
       
