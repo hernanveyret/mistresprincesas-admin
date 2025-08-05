@@ -95,7 +95,6 @@ function App() {
   useEffect(() => {
     onAuthStateChanged(auth, (user) => {
       if (user) {
-        console.log("✅ UID del admin:", user.uid);
         setUsuario(user)
         setIsLogin(false);
         setInitBtn(true)
@@ -129,7 +128,7 @@ function App() {
   // eliminar imagen de cloudinary productos ok
   const eliminarImagen = async (carpeta, publicId) => {    
     try {
-      const res = await fetch('http://localhost:3000/api/eliminar-imagen', {
+      const res = await fetch('https://mistresprincesas-admin.vercel.app/api/eliminar-imagen', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
