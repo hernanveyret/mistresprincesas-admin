@@ -9,9 +9,9 @@ export default defineConfig({
     VitePWA({
       registerType:'autoUpdate',
       manifest:{
-        name:'Carrito-db',
-        short_name:'Carrito-db',
-        description:'Carrito de compras con base de datos',
+        name:'Mis Tres Princesas-ADMIN',
+        short_name:'Mis Tres Princesas-ADMIN',
+        description:'Administrador',
         theme_color:'#ffffff',
         background_color:'#ffffff',
         display:'standalone',
