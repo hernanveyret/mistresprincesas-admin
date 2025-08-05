@@ -83,7 +83,7 @@ const EditarProducto = ({ setIsEditProducto,
   };
 const eliminarImagenAnterior = async () => {
   try {
-    const res = await fetch('http://localhost:3000/api/eliminar-imagen', {
+    const res = await fetch('https://m3p-server.vercel.app/api/eliminar-imagen', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

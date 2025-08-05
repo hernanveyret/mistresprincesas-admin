@@ -121,7 +121,7 @@ function App() {
       if(unsubscribeCategorias) unsubscribeCategorias(); // Limpia el listener cuando se desmonta
       if(unsubscribeDatosBancarios) unsubscribeDatosBancarios(); // Limpia el listener cuando se desm
     }
-    onta
+    
   }, []);
 
 
