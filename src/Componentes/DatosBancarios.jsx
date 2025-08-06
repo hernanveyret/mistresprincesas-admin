@@ -39,6 +39,11 @@ const DatosBancarios = ({
   return (
     <div className="container-datos-bancarios">
       <h4>Ingrese sus datos bancarios</h4>
+      <h5>Datos Actuales</h5>
+      <ul>
+        <li><span style={{fontWeight:'bold'}}>Alias:</span> {datosDeBanco[0].alias}</li>
+        <li><span style={{fontWeight:'bold'}}>CVU/CBU:</span> {datosDeBanco[0].cvu}</li>
+      </ul>
       <form 
         className="form-datos-bancarios" 
         onSubmit={handleSubmit(onSubmit)}>

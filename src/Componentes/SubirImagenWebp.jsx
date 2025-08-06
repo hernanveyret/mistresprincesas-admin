@@ -17,7 +17,7 @@ function SubirImagenWebP({setAdd,
   const [ archivoOriginal, setAchivoOriginal ] = useState(null)
   const [ isOferta, setIsOferta ] = useState(false);
   const [ publicId, setIsPublicId ] = useState(null);
-
+  const [ mensageErrorImagen, setMensageErrorImagen ] = useState(null)
   
 
   const {
@@ -118,7 +118,7 @@ useEffect(() => {
 
   const onSubmit = async (data) => {
   if (!archivoOriginal) {
-    alert('Debes seleccionar una imagen');
+    setMensageErrorImagen('Debe seleccionar una imagen')
     return;
   }
   //console.log("Datos del producto:", data); // data trae lo que esta en el input
@@ -149,7 +149,7 @@ useEffect(() => {
             ))
           }
         </select>
-        { errors.categoria?.message && <p>{errors.categoria.message}</p>}
+        { errors.categoria?.message && <p style={{color:'red'}}>{errors.categoria.message}</p>}
         <input type="text" placeholder="Ingrese titulo del producto" 
           {...register('titulo', {
             required: {
@@ -158,7 +158,7 @@ useEffect(() => {
             }
           })}
         />
-        { errors.titulo?.message && <p>{errors.titulo.message}</p>}
+        { errors.titulo?.message && <p style={{color:'red'}}>{errors.titulo.message}</p>}
 
         <input type="text" placeholder="Ingrese una descripcion" 
           {...register('descripcion', {
@@ -168,7 +168,7 @@ useEffect(() => {
             }
           })}
         />
-        { errors.descripcion?.message && <p>{errors.descripcion.message}</p>}
+        { errors.descripcion?.message && <p style={{color:'red'}}>{errors.descripcion.message}</p>}
 
         <label>$<input type="text" placeholder="precio"
           {...register('precio', {
@@ -183,7 +183,7 @@ useEffect(() => {
           })}
         />
         </label>
-          { errors.precio?.message && <p>{errors.precio.message}</p>}
+          { errors.precio?.message && <p style={{color:'red'}}>{errors.precio.message}</p>}
 
         <label>
           Oferta
@@ -207,7 +207,16 @@ useEffect(() => {
         }
       
       <label>Ingrese una imagen del producto</label>
-      <input type="file" accept="image/*" onChange={(e) => {setAchivoOriginal(e.target.files[0])}} />
+      <input type="file" accept="image/*" 
+        onChange={(e) => { 
+          setAchivoOriginal(e.target.files[0]);
+          setMensageErrorImagen(null);
+        }} 
+      />
+      {
+        mensageErrorImagen && 
+          <p style={{color:'red'}}>Debe seleccionar una imagen</p>
+      }
       <label>Activar el producto<input type="checkbox" checked={isActivate} onChange={(e) => { setIsActivate((prev) => !prev)}}/></label>
       <input type="submit" />
       </form>

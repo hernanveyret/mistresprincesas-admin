@@ -51,20 +51,14 @@ export const loginConMail = async(dataUser) => {
     const userLogin = await signInWithEmailAndPassword(auth,dataUser.correo, dataUser.contraseña);
     return userLogin.user
   } catch (error) {
-  if (error.code === 'auth/wrong-password') {
-    console.log('Contraseña incorrecta');
-  } else if (error.code === 'auth/user-not-found') {
-    console.log('Usuario no encontrado');
-  } else {
-    console.log('Error de autenticación', error.message, error.code);
-  }
-  throw error;
+    //console.log(error.code)
+    return { ok: false, error: error.code }  
 }
 }
 // Cerrar sesion
 export const cerrarSesion = async () => {
   signOut(auth).then(() => {
-    console.log('Sesion finalizada')
+    //console.log('Sesion finalizada')
   })
 }
 
@@ -174,15 +168,16 @@ export const editarProducto = async (idProducto, update) => {
   }
 }
 
-export const editarCategoria = async (idCategoria, update) => {  
+export const editarCategoria = async (idCategoria, dataActualizada) => {  
   try {
-    const docRef = doc(db,'categorias', idCategoria);
-    const result = await updateDoc(docRef, { categoria: update})    
-      return { ok: true }    
+    const docRef = doc(db, 'categorias', idCategoria);
+    await updateDoc(docRef, dataActualizada);
+    return { ok: true };    
   } catch (error) {
-    return { ok: false, message: 'Error al editar la categoria'}
+    console.error('Error al editar la categoría:', error);
+    return { ok: false, message: 'Error al editar la categoría' };
   }
-}
+};
 
 export const editActivate = async (idproducto, update) => {
   try {

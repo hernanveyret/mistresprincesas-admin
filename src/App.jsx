@@ -8,6 +8,7 @@ import DatosBancarios from './Componentes/DatosBancarios.jsx';
 import Confirm from './Componentes/Confirm.jsx';
 import Error from './Componentes/Error.jsx';
 
+
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/config.js";
 
@@ -24,6 +25,7 @@ import { loginConMail,
         } from './firebase/auth.js';
 import EditarCategoria from './Componentes/EditarCategoria.jsx';
 import FormAuth from './Componentes/FormAuth.jsx';
+import ConfirmBorrado from './Componentes/ConfirmBorrado.jsx';
 
 function App() {
   const [ isLogin, setIsLogin ] = useState(true);
@@ -46,6 +48,8 @@ function App() {
   const [ isDatosBancarios, setIsDatosBancarios ] = useState(false);
   const [ isConfirm, setIsConfirm ] = useState(false);
   const [ isError, setIsError ] = useState(false);
+  const [ isConfirmBorrado, setIsConfirmBorrado ] = useState(false);
+  const [ borrar, setBorrar ] = useState(false);
 
   const [ usuarioActual, setUsuarioActual ] = useState(null) 
 
@@ -53,25 +57,11 @@ function App() {
   const [ archivoOriginal, setAchivoOriginal ] = useState(null)
   const [ textoConfirm, setTextoConfirm] = useState('');
   const [ textoError, setTextoError ] = useState('');
+  const [ mensageErrorImagen, setMensageErrorImagen ] = useState(null)
 
   const [ publicId, setIsPublicId ] = useState(null);
 
-  function useIsMobile() {
-    const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
-
-    useEffect(() => {
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-
-      window.addEventListener('resize', handleResize);
-      return () => window.removeEventListener('resize', handleResize);
-    }, []);
-
-    return isMobile;
-  }
-  const isMobile = useIsMobile();
-  const [ menu, setMenu ] = useState(isMobile)
+  const [ menu, setMenu ] = useState(true)
 
   // Para guardar URL subida
   const [ url, setUrl ] = useState(null);
@@ -102,7 +92,7 @@ function App() {
         const currentUsuario = auth.currentUser
         setUsuarioActual(currentUsuario)
       } else {
-        console.log("⛔ No hay usuario logueado");
+        //console.log("⛔ No hay usuario logueado");
         setUser(false)
       }
     });
@@ -110,7 +100,7 @@ function App() {
 
   useEffect(() => {
     //console.log(usuario)
-    usuario?.photoURL && console.log(usuario.photoURL)  
+    //usuario?.photoURL && console.log(usuario.photoURL)  
   },[usuario]);
 
   //Escucha firebase cuando hay categorias para mostrar
@@ -123,7 +113,6 @@ function App() {
     }
     
   }, []);
-
 
   // eliminar imagen de cloudinary productos ok
   const eliminarImagen = async (carpeta, publicId) => {    
@@ -209,9 +198,18 @@ function App() {
 
   // Esta es la función que sube la imagen y luego crea la categoria
 const onSubmit = async (data) => {
-  if (!archivoOriginal) {
-    alert('Debes seleccionar una imagen');
+  const filtro = categorias.some(c => c.categoria[0].toUpperCase() + c.categoria.slice(1) === data.categoria[0].toUpperCase() + data.categoria.slice(1))
+  if(filtro){
+    setTextoError('Categoria ya creada')
+    setIsError(true);
     return;
+  }
+  
+  if (!archivoOriginal) {
+    setMensageErrorImagen('Debe seleccionar una imagen')
+    return;
+  }else{
+    setMensageErrorImagen(null)
   }
 
   try {
@@ -219,7 +217,8 @@ const onSubmit = async (data) => {
     const resultado = await subirACloudinary(webpBlob, archivoOriginal.name);
 
     if (!resultado) {
-      alert('Error al subir la imagen');
+      setTextoError('Error al subir la imagen')
+      setIsError(true);
       return;
     }
 
@@ -237,12 +236,13 @@ const onSubmit = async (data) => {
     setIsConfirm(true);
 
   } catch (error) {
-    console.error('Error creando categoría:', error);
-    alert('Error creando categoría');
+    setTextoError('Error al crear la categoria')
+    setIsError(true);
   }
 };
 
   const CrearCategorias = () => {
+    
     return (
       <div className="container-general">
         <div className='header-general'>
@@ -272,11 +272,17 @@ const onSubmit = async (data) => {
             accept="image/*"
             onChange={(e) => {
               setAchivoOriginal(e.target.files[0]);
+              setMensageErrorImagen(null);
             }}
           />
           {archivoOriginal && (
             <p>Archivo seleccionado: {archivoOriginal.name}</p>
           )}
+          {
+            mensageErrorImagen && (
+              <p style={{color:'red'}}>{mensageErrorImagen}</p>
+            )
+          }
           <input type="submit" value="CARGAR" />
         </form>
         <ul className='lista-categorias'>
@@ -365,7 +371,16 @@ const onSubmit = async (data) => {
 
   const Login = () => {
     const subMitLogin = async (data) => {
-      await loginConMail (data)
+      const result = await loginConMail (data)
+      if(!result.ok){
+        if(result.error === 'auth/invalid-email'){
+          setTextoError('Correo Incorrecto');          
+          setIsError(true)
+        } else if(result.error === 'auth/invalid-credential'){
+          setTextoError('Contraseña Invalida');          
+          setIsError(true)
+        }
+      }
       reset();
     }
 
@@ -412,7 +427,7 @@ const onSubmit = async (data) => {
           })}
           />
           </span>
-          { errors.envio?.message && <p>{errors.envio.message}</p>}
+          { errors.envio?.message && <p style={{color:'red'}}>{errors.envio.message}</p>}
           <button className="btn-envio"type="submit">CARGAR</button>
         </form>
       </div>
@@ -441,9 +456,9 @@ const onSubmit = async (data) => {
         
         <div className="contenedor-btn">
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true)
+            setMenu(false);
             setAdd(false);
             setIsCarrito(false);
             setIsActualizar(false);
@@ -456,9 +471,9 @@ const onSubmit = async (data) => {
               Categorias
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true)
+            setMenu(false);
             setIsCarrito(false);
             setIsEnvio(false);
             setIsActualizar(false);
@@ -466,12 +481,12 @@ const onSubmit = async (data) => {
             setIsDatosBancarios(false);
             setAdd((prev) => !prev);            
              }} title="Ingresar productos">
-              Ingresar productos
+              Crear productos
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true) 
+            setMenu(false); 
             setIsActualizar(false);
             setIsCategorias(false);
             setAdd(false); 
@@ -482,9 +497,9 @@ const onSubmit = async (data) => {
               Lista de productos
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true) 
+            setMenu(false); 
             setIsCategorias(false);
             setAdd(false); 
             setIsCarrito(false)
@@ -495,9 +510,9 @@ const onSubmit = async (data) => {
               Cambio de contraseña
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true)
+            setMenu(false);
             setIsCategorias(false);
             setAdd(false); 
             setIsCarrito(false);
@@ -508,9 +523,9 @@ const onSubmit = async (data) => {
               Costo de envio
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
-            setMenu(true)
+            setMenu(false);
             setAdd(false);
             setIsCarrito(false);
             setIsActualizar(false);
@@ -522,10 +537,10 @@ const onSubmit = async (data) => {
               Datos Bancarios
           </button>
           <button 
-          style={!menu ? styleBlock : styleNone}
+          style={menu ? styleBlock : styleNone}
           onClick={() => {
             setIsDatosBancarios(false);
-            setMenu(true) 
+            setMenu(false); 
             setIsCategorias(false);
             setAdd(false); 
             setIsCarrito(false);
@@ -557,6 +572,15 @@ const onSubmit = async (data) => {
 
   return (
     <div className="container-app">
+      {
+        isConfirmBorrado &&
+          <ConfirmBorrado 
+          isConfirmBorrado={isConfirmBorrado}
+          setIsConfirmBorrado={setIsConfirmBorrado}
+          borrar={borrar}
+          setBorrar={setBorrar}
+          />
+      }
       { 
         isConfirm && 
           <Confirm 
@@ -596,6 +620,7 @@ const onSubmit = async (data) => {
             setIsConfirm={setIsConfirm}
             textoConfirm={textoConfirm}
             setTextoConfirm={setTextoConfirm}
+            categorias={categorias}
           />
         }
            
@@ -626,6 +651,10 @@ const onSubmit = async (data) => {
             eliminarImagen={eliminarImagen}
             setIsActivate={setIsActivate}
             isActivate={isActivate}
+            isConfirmBorrado={isConfirmBorrado}
+            setIsConfirmBorrado={setIsConfirmBorrado}
+            borrar={borrar}
+            setBorrar={setBorrar}
           />
         }
         { isEditProducto && 

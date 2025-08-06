@@ -31,7 +31,7 @@
 }
 
 input[type='password'] {
-  width: 85%;
+  width: 80%;
 }
 
 
@@ -94,6 +94,7 @@ input[type='text'], input[type='password'] {
   border-radius: 5px;
   outline: none;
   border-bottom: 1px solid grey;
+  width: 80%;
 }
 input[type="submit"] {
   padding:10px;
@@ -219,7 +220,7 @@ input[type='password']:focus {
   margin:20px auto;
 }
 .container-login form input[type="password"] {
-  width: 70%;
+  width: 80%;
 }
 /*-------------------------------------------------------------*/
   .contenedor-btn {  

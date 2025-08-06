@@ -15,9 +15,14 @@ const Carrito = ({
   setProductoEditar,
   eliminarImagen,
   isActivate,
-  setIsActivate
+  setIsActivate,
+  isConfirmBorrado,
+  setIsConfirmBorrado,
+  borrar,
+  setBorrar
 }) => {
   const [categoriaFiltrada, setCategoriaFiltrada] = useState('');
+  const [ productoSelect, setProductoSelect ] = useState(null)
 
   const sacarOferta = (precio, porcentaje) => {
     const precioOff = precio * porcentaje / 100;
@@ -37,8 +42,16 @@ const Carrito = ({
     setCategoriaFiltrada(e.target.value);
   };
 
+  useEffect(() => {
+    if(borrar){
+      handleEliminarProducto(productoSelect);
+      setIsConfirmBorrado(false)
+    }
+  },[borrar])
+
+
   const handleEliminarProducto = async (prod) => {
-    console.log('🔄 Eliminando producto:', prod.titulo);
+      
     try {
       await eliminarImagen('Producto borrado con exito', prod.public_id);
       await borrarCategoria('productos', prod.id);
@@ -56,6 +69,8 @@ const Carrito = ({
       console.error('❌ Error al cambiar estado activate:', error);
     }
   };
+
+ 
 
   const renderProducto = (prod) => (
     <div key={prod.id} className="fila-producto">
@@ -86,9 +101,10 @@ const Carrito = ({
         >
           ✏️
         </button>
-
         <button
-          onClick={() => handleEliminarProducto(prod)}
+          onClick={() => { 
+            setProductoSelect(prod)
+            setIsConfirmBorrado(true) }}
           title="Eliminar"
         >
           🗑️

@@ -56,6 +56,7 @@ const EditarProducto = ({ setIsEditProducto,
     const baseName = originalName.split('.').slice(0, -1).join('.');
     const webpFileName = `${baseName}.webp`;
 
+    
     const formData = new FormData();
     formData.append('file', webpBlob, webpFileName);
     formData.append('upload_preset', 'carrito_upload');
@@ -171,6 +172,8 @@ const eliminarImagenAnterior = async () => {
 
         <input
           type="text"
+          id="titulo"
+          name="titulo"
           defaultValue={productoEditar.titulo}
           {...register('titulo', {
             required: { value: true, message: 'Campo obligatorio' },
@@ -180,6 +183,8 @@ const eliminarImagenAnterior = async () => {
 
         <input
           type="text"
+          id="descripcion"
+          name="descripcion"
           defaultValue={productoEditar.descripcion}
           {...register('descripcion', {
             required: { value: true, message: 'Campo obligatorio' },
@@ -191,6 +196,8 @@ const eliminarImagenAnterior = async () => {
           $
           <input
             type="text"
+            id="precio"
+            name="precio"
             defaultValue={productoEditar.precio}
             {...register('precio', {
               required: { value: true, message: 'Campo obligatorio' },
@@ -207,6 +214,8 @@ const eliminarImagenAnterior = async () => {
           Oferta
           <input
             type="checkbox"
+            id="check"
+            name="check"
             checked={isOfertaEdit}
             onChange={() => setIsOfertaEdit((prev) => !prev)}
           />
@@ -216,6 +225,8 @@ const eliminarImagenAnterior = async () => {
           <label> %
             <input
               type="text"
+              id="porcentaje"
+              name="porcentaje"
               defaultValue={productoEditar.porcentajeOff}
               {...register('porcentaje', {
                 required: { value: true, message: 'Campo obligatorio' },
