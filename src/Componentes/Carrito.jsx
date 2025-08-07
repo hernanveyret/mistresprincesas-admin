@@ -153,7 +153,7 @@ const Carrito = ({
           productosAMostrar.length > 0 ?
             productosAMostrar.map(renderProducto)
             :
-            <p>No hay productos para mostrar.</p>
+            <p style={{textAlign:'center'}}>No hay productos para mostrar.</p>
         }
       </div>
     </div>

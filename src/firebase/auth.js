@@ -228,8 +228,6 @@ export const cambiarContrasena = async (user, contraseñaActual, nuevaContrasena
     const resultado = await updatePassword(user, nuevaContrasena);
     return { ok: true }
   } catch (error) {
-    console.error("Error cambiando la contraseña:", error);
-    throw error;
     return { ok: false, error: error }
   }
 };

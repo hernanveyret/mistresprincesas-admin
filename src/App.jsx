@@ -8,7 +8,8 @@ import DatosBancarios from './Componentes/DatosBancarios.jsx';
 import Confirm from './Componentes/Confirm.jsx';
 import Error from './Componentes/Error.jsx';
 import InstallPrompt from './Componentes/InstallPrompt.jsx';
-
+import Compartir from './Componentes/Compartir.jsx';
+import VerQr from './Componentes/VerQr.jsx';
 
 import { onAuthStateChanged } from "firebase/auth";
 import { auth } from "./firebase/config.js";
@@ -27,6 +28,7 @@ import { loginConMail,
 import EditarCategoria from './Componentes/EditarCategoria.jsx';
 import FormAuth from './Componentes/FormAuth.jsx';
 import ConfirmBorrado from './Componentes/ConfirmBorrado.jsx';
+import SharedConfirm from './Componentes/SharedConfirm.jsx';
 
 function App() {
   const [ isLogin, setIsLogin ] = useState(true);
@@ -51,6 +53,7 @@ function App() {
   const [ isError, setIsError ] = useState(false);
   const [ isConfirmBorrado, setIsConfirmBorrado ] = useState(false);
   const [ borrar, setBorrar ] = useState(false);
+  const [ isCompartir, setIsCompartir]  = useState(false);
 
   const [ usuarioActual, setUsuarioActual ] = useState(null) 
 
@@ -59,6 +62,8 @@ function App() {
   const [ textoConfirm, setTextoConfirm] = useState('');
   const [ textoError, setTextoError ] = useState('');
   const [ mensageErrorImagen, setMensageErrorImagen ] = useState(null)
+  const [ sharedLink, setSharedLink ] = useState(false);
+  const [ onQr, setOnQr ] = useState(false);
 
   const [ publicId, setIsPublicId ] = useState(null);
 
@@ -354,7 +359,9 @@ const onSubmit = async (data) => {
         setTextoConfirm('Contraseña Actualizada');
         setIsConfirm(true);
       }else{
-        alert('No se puedo actualizar la contraseña')
+        setIsError(true);
+        setTextoError('Contraseña Anterior Incorrecta')
+        
       }
       //await cambiarCorreo(usuarioActual, data.contraseña, data.correoNuevo)
     }
@@ -465,8 +472,8 @@ const onSubmit = async (data) => {
             setIsActualizar(false);
             setIsEnvio(false);
             setIsDatosBancarios(false)
+            setIsCompartir(false);
             setIsCategorias((prev) => !prev);
-
              }} 
              title="Crear/editar/borrar Catgorias">
               Categorias
@@ -480,11 +487,13 @@ const onSubmit = async (data) => {
             setIsActualizar(false);
             setIsCategorias(false);
             setIsDatosBancarios(false);
+            setIsCompartir(false);
             setAdd((prev) => !prev);            
              }} title="Ingresar productos">
               Crear productos
           </button>
           <button 
+          title="Lista de Productos"
           style={menu ? styleBlock : styleNone}
           onClick={() => {
             setMenu(false); 
@@ -493,6 +502,7 @@ const onSubmit = async (data) => {
             setAdd(false); 
             setIsEnvio(false);
             setIsDatosBancarios(false);
+            setIsCompartir(false);
             setIsCarrito((prev) => !prev)
              }}>
               Lista de productos
@@ -506,11 +516,13 @@ const onSubmit = async (data) => {
             setIsCarrito(false)
             setIsEnvio(false)
             setIsDatosBancarios(false);
+            setIsCompartir(false);
             setIsActualizar((prev) => !prev)
              }}>
               Cambio de contraseña
           </button>
           <button 
+          title="Costo de Envio"
           style={menu ? styleBlock : styleNone}
           onClick={() => {
             setMenu(false);
@@ -519,7 +531,8 @@ const onSubmit = async (data) => {
             setIsCarrito(false);
             setIsActualizar(false);
             setIsDatosBancarios(false);
-            setIsEnvio(true) 
+            setIsCompartir(false);
+            setIsEnvio((prev) => !prev) ;
              }}>
               Costo de envio
           </button>
@@ -532,10 +545,26 @@ const onSubmit = async (data) => {
             setIsActualizar(false);
             setIsEnvio(false);
             setIsCategorias(false);
-            setIsDatosBancarios(true);
+            setIsCompartir(false);
+            setIsDatosBancarios((prev) => !prev);
              }} 
-             title="Crear/editar/borrar Catgorias">
+             title="Datos Bancarios">
               Datos Bancarios
+          </button>
+          <button 
+          style={menu ? styleBlock : styleNone}
+          onClick={() => {
+            setMenu(false);
+            setAdd(false);
+            setIsCarrito(false);
+            setIsActualizar(false);
+            setIsEnvio(false);
+            setIsDatosBancarios(false)
+            setIsCategorias(false);
+            setIsCompartir((prev) => !prev);
+             }} 
+             title="Compartir Pagina">
+              Compartir
           </button>
           <button 
           style={menu ? styleBlock : styleNone}
@@ -547,6 +576,7 @@ const onSubmit = async (data) => {
             setIsCarrito(false);
             setIsActualizar(false);
             setIsEnvio(false);
+            setIsCompartir(false);
             setInitBtn((prev) => !prev); 
             setIsLogin((prev) => !prev) 
             cerrarSesion();
@@ -573,7 +603,11 @@ const onSubmit = async (data) => {
 
   return (
     <div className="container-app">
-        <InstallPrompt />      
+        <InstallPrompt /> 
+      {
+        sharedLink && 
+        <SharedConfirm />
+      }   
       {
         isConfirmBorrado &&
           <ConfirmBorrado 
@@ -591,7 +625,7 @@ const onSubmit = async (data) => {
           setTextoConfirm={setTextoConfirm}
           />
       }
-
+      
       {
         isError && 
           <Error
@@ -607,7 +641,20 @@ const onSubmit = async (data) => {
         { isLogin && <Login /> }
         { isEnvio && <CostoDeEnvio /> }
         { isActualizar && <ActualizarEmailContraseña /> }
-
+        {
+          isCompartir &&
+          <Compartir 
+          setSharedLink={setSharedLink}
+          setOnQr={setOnQr}
+          />
+        }
+        {
+        onQr &&
+        <VerQr
+        setOnQr={setOnQr}
+        onQr={onQr} 
+        />
+      }
         { isCategorias && 
           <CrearCategorias 
           categorias={categorias}
