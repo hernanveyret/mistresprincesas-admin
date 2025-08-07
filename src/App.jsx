@@ -7,6 +7,7 @@ import EditarProducto from './Componentes/EditarProducto.jsx';
 import DatosBancarios from './Componentes/DatosBancarios.jsx';
 import Confirm from './Componentes/Confirm.jsx';
 import Error from './Componentes/Error.jsx';
+import InstallPrompt from './Componentes/InstallPrompt.jsx';
 
 
 import { onAuthStateChanged } from "firebase/auth";
@@ -572,6 +573,7 @@ const onSubmit = async (data) => {
 
   return (
     <div className="container-app">
+        <InstallPrompt />      
       {
         isConfirmBorrado &&
           <ConfirmBorrado 
