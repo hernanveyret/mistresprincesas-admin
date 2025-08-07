@@ -7,7 +7,9 @@ const DatosBancarios = ({
                         guardarDatosbancarios, 
                         datosDeBanco, 
                         setTextoConfirm, 
-                        setIsConfirm 
+                        setIsConfirm ,
+                        setIsError,
+                        setTextoError
                       }) => {
   const [usarAlias, setUsarAlias] = useState(false);
   const [usarCvu, setUsarCvu] = useState(false);
@@ -20,6 +22,14 @@ const DatosBancarios = ({
   } = useForm();
 
   const onSubmit = async (data) => {
+  
+    if (!data || Object.keys(data).length === 0) {
+    setIsError(true);
+    setTextoError('No se ingresaron datos bancarios');
+    return;
+    }
+
+
       const bancoDatos = {
       alias: data.aliasAdmin ? data.aliasAdmin : datosDeBanco[0].alias,
       cvu: data.cvucbuAdmin ? data.cvucbuAdmin : datosDeBanco[0].cvu

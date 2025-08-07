@@ -728,6 +728,8 @@ const onSubmit = async (data) => {
               datosDeBanco={datosDeBanco}
               setIsConfirm={setIsConfirm}
               setTextoConfirm={setTextoConfirm}
+              setIsError={setIsError}
+              setTextoError={setTextoError}
             />
         }
       </main>      
