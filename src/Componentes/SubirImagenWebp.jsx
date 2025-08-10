@@ -225,4 +225,3 @@ useEffect(() => {
 }
 
 export default SubirImagenWebP;
-
