@@ -88,6 +88,7 @@ const FormAuth = ({ subMitLogin, titulo, actualizar }) => {
               })}
             />
             {errors.contraseñaNueva && <p style={{color: 'red'}}>{errors.contraseñaNueva.message}</p>}
+            <p>Minimo 6 caracteres</p>
           </>
         )}
 
