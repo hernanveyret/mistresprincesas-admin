@@ -45,7 +45,8 @@ const Carrito = ({
   useEffect(() => {
     if(borrar){
       handleEliminarProducto(productoSelect);
-      setIsConfirmBorrado(false)
+      setIsConfirmBorrado(false);
+      setBorrar(false);
     }
   },[borrar])
 
